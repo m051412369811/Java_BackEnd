@@ -1,0 +1,42 @@
+package com.example.demo.controller;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid; // 用於Controller參數
+
+import com.example.demo.dto.BaseApiResponse;
+import com.example.demo.dto.LeaveApplicationRequestDTO;
+import com.example.demo.dto.LeaveApplicationResponseDTO;
+import com.example.demo.dto.LeaveApplicationSummaryDTO;
+import com.example.demo.service.LeaveApplicationService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@RestController
+@RequestMapping("/api/leave-applications")
+public class LeaveApplicationController {
+    @Autowired
+    private LeaveApplicationService service;
+
+    @GetMapping("/summary")
+    public List<LeaveApplicationSummaryDTO> getLeaveApplicationSummaries() {
+        return service.getAllLeaveApplicationSummaries();
+    }
+
+    @PostMapping
+    public BaseApiResponse<LeaveApplicationResponseDTO> createLeaveApplication(
+            @Valid @RequestBody LeaveApplicationRequestDTO dto) {
+        try {
+            LeaveApplicationResponseDTO result = service.createLeaveApplication(dto);
+            return new BaseApiResponse<>(result);
+        } catch (Exception ex) {
+            return new BaseApiResponse<>(ex.getMessage());
+        }
+
+    }
+
+}
