@@ -11,13 +11,14 @@ import com.example.demo.dto.BaseApiResponse;
 import com.example.demo.dto.LeaveApplicationRequestDTO;
 import com.example.demo.dto.LeaveApplicationResponseDTO;
 import com.example.demo.dto.LeaveApplicationSummaryDTO;
+import com.example.demo.dto.LeaveTypeDTO;
 import com.example.demo.service.LeaveApplicationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/leave-applications")
+@RequestMapping("/api/leaveapplications")
 public class LeaveApplicationController {
     @Autowired
     private LeaveApplicationService service;
@@ -27,7 +28,7 @@ public class LeaveApplicationController {
         return service.getAllLeaveApplicationSummaries();
     }
 
-    @PostMapping
+    @PostMapping("/applyingleaveapplication")
     public BaseApiResponse<LeaveApplicationResponseDTO> createLeaveApplication(
             @Valid @RequestBody LeaveApplicationRequestDTO dto) {
         try {
@@ -37,6 +38,17 @@ public class LeaveApplicationController {
             return new BaseApiResponse<>(ex.getMessage());
         }
 
+    }
+
+    @GetMapping("/getallleaveType")
+    public BaseApiResponse<List<LeaveTypeDTO>> getAllLeavType() {
+
+        try {
+            List<LeaveTypeDTO> result = service.getAllLeaveType();
+            return new BaseApiResponse<>(result);
+        } catch (Exception ex) {
+            return new BaseApiResponse<>(ex.getMessage());
+        }
     }
 
 }
