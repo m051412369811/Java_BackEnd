@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +39,9 @@ public class LeaveApplicationService {
                 .orElseThrow(() -> new RuntimeException("假別不存在"));
         StatusType status = statusTypeRepository.findById(dto.getStatusId())
                 .orElseThrow(() -> new RuntimeException("狀態不存在"));
-
+        LocalDate applyTime = dto.getApplyDate();
         // 2. Mapper轉換物件型態
-        LeaveApplication entity = leaveApplicationMapper.toEntity(dto, employee, leaveType, status);
+        LeaveApplication entity = leaveApplicationMapper.toEntity(dto, employee, leaveType, status, applyTime);
         LeaveApplication savedLeaveApplication = repository.save(entity);
         // 3.
         return leaveApplicationMapper.toResponseDTO(savedLeaveApplication);

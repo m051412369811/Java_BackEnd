@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class LeaveApplication {
     private Employee employee;
 
     @Column(name = "ApplyDate", nullable = false)
-    private Date applyDate;
+    private LocalDate applyDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LeaveTypeID", nullable = false)

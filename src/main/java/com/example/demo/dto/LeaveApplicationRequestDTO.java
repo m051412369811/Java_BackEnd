@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
 import java.sql.Date;
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -12,10 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LeaveApplicationRequestDTO {
 
-    @NotNull
     private Integer employeeId;
-    @NotNull
-    private Date applyDate;
     @NotNull
     private Integer leaveTypeId;
     @NotNull
@@ -25,6 +24,8 @@ public class LeaveApplicationRequestDTO {
     private Date leaveStart;
     @NotNull
     private Date leaveEnd;
+
+    private LocalDate applyDate;
     @NotNull
     private Integer statusId;
 

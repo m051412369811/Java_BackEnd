@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
@@ -18,15 +19,16 @@ public class LeaveApplicationMapper {
             LeaveApplicationRequestDTO dto,
             Employee employee,
             LeaveType leaveType,
-            StatusType status) {
+            StatusType status,
+            LocalDate applyTime) {
         LeaveApplication entity = new LeaveApplication();
         entity.setEmployee(employee);
-        entity.setApplyDate(dto.getApplyDate());
         entity.setLeaveType(leaveType);
         entity.setLeaveDay(dto.getLeaveDay());
         entity.setLeaveStart(dto.getLeaveStart());
         entity.setLeaveEnd(dto.getLeaveEnd());
         entity.setStatus(status);
+        entity.setApplyDate(applyTime);
         entity.setCreateTime(LocalDateTime.now());
         entity.setUpdateTime(LocalDateTime.now());
         return entity;

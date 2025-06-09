@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
 import java.sql.Date;
+import java.time.LocalDate;
+
 import lombok.Data;
 
 @Data
@@ -12,11 +14,11 @@ public class LeaveApplicationSummaryDTO {
     private String statusType;
     private Date leaveStart;
     private Date leaveEnd;
-    private Date applyDate;
+    private LocalDate applyDate;
 
     public LeaveApplicationSummaryDTO(
             Integer id, String employeeName, String leaveType, Integer leaveDay, String statusType,
-            Date leaveStart, Date leaveEnd, Date applyDate) {
+            Date leaveStart, Date leaveEnd, LocalDate applyDate) {
         this.id = id;
         this.employeeName = employeeName;
         this.leaveType = leaveType;
