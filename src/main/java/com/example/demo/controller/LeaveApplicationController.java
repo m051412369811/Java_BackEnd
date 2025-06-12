@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +27,20 @@ public class LeaveApplicationController {
     private LeaveApplicationService service;
 
     @GetMapping("/summary")
-    public List<LeaveApplicationSummaryDTO> getLeaveApplicationSummaries() {
-        return service.getAllLeaveApplicationSummaries();
+    public List<LeaveApplicationSummaryDTO> getLeaveApplicationSummaries(HttpSession session) {
+        // 1. 從 session 中獲取登入時存入的員工 ID
+        Object empIdFromSession = session.getAttribute("EMPLOYEE_ID");
+        // 2. 檢查 session 中是否存在員工 ID (使用者是否登入)
+        if (empIdFromSession != null) {
+            // 將 Object 型別轉換為 Integer
+            Integer employeeId = (Integer) empIdFromSession;
+            // 3. 呼叫 service 方法，並傳入從 session 拿到的 ID
+            return service.getLeaveApplicationSummariesByEmployeeId(employeeId);
+        } else {
+            // 如果使用者未登入，回傳一個空的列表
+            // 這樣可以避免前端出錯，同時也保護了資料
+            return Collections.emptyList();
+        }
     }
 
     @PostMapping("/applyingleaveapplication")

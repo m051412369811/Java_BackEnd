@@ -3,6 +3,8 @@ package com.example.demo.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.example.demo.dto.LeaveApplicationSummaryDTO;
 import com.example.demo.entity.LeaveApplication;
 
@@ -14,7 +16,8 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
             "JOIN la.employee e " +
             "JOIN la.leaveType lt " +
             "JOIN la.status st " +
+            "WHERE e.id = :empId " +
             "ORDER BY la.applyDate DESC")
-    List<LeaveApplicationSummaryDTO> findAllSummary();
+    List<LeaveApplicationSummaryDTO> findSummaryByEmployeeId(@Param("empId") Integer empId);
 
 }

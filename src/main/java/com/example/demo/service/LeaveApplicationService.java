@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,10 @@ public class LeaveApplicationService {
     @Autowired
     private LeaveTypeMapper leaveTypeMapper;
 
-    public List<LeaveApplicationSummaryDTO> getAllLeaveApplicationSummaries() {
+    public List<LeaveApplicationSummaryDTO> getLeaveApplicationSummariesByEmployeeId(Integer empId) {
+        // 呼叫我們在 Repository 中定義的新方法
         System.out.println("JPQL findAllSummary() 被呼叫");
-        return repository.findAllSummary();
+        return repository.findSummaryByEmployeeId(empId);
     }
 
     public LeaveApplicationResponseDTO createLeaveApplication(LeaveApplicationRequestDTO dto) {
