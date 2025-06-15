@@ -48,6 +48,9 @@ public class LeaveApplication {
     @Column(name = "UpdateTime", nullable = false)
     private LocalDateTime updateTime;
 
+    @Column(name = "Description", columnDefinition = "TEXT", nullable = true)
+    private String description;
+
     @OneToMany(mappedBy = "leaveApplication", fetch = FetchType.LAZY)
     private List<LeaveRecord> leaveRecords;
 

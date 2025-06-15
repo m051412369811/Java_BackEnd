@@ -10,7 +10,7 @@ import com.example.demo.entity.LeaveApplication;
 
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication, Integer> {
     @Query("SELECT new com.example.demo.dto.LeaveApplicationSummaryDTO(" +
-            "la.id, CONCAT(e.lastName, e.firstName), lt.type, la.leaveDay, st.type, la.leaveStart, la.leaveEnd, la.applyDate) "
+            "la.id, CONCAT(e.lastName, e.firstName), lt.type, la.leaveDay, st.type, la.leaveStart, la.leaveEnd, la.applyDate, la.description) "
             +
             "FROM LeaveApplication la " +
             "JOIN la.employee e " +

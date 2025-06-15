@@ -5,13 +5,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record LeaveApplicationResponseDTO(
-                Integer id,
-                String employeeName,
-                String leaveTypeName,
-                LocalDate applyDate,
-                Integer leaveDay,
-                Date leaveStart,
-                Date leaveEnd,
-                String statusType,
-                LocalDateTime createTime) {
+        Integer id,
+        String employeeName,
+        String leaveTypeName,
+        LocalDate applyDate,
+        Integer leaveDay,
+        Date leaveStart,
+        Date leaveEnd,
+        String description,
+        String statusType,
+        LocalDateTime createTime) {
 }

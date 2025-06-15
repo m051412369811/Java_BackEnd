@@ -29,6 +29,7 @@ public class LeaveApplicationMapper {
         entity.setLeaveEnd(dto.getLeaveEnd());
         entity.setStatus(status);
         entity.setApplyDate(applyTime);
+        entity.setDescription(dto.getDescription());
         entity.setCreateTime(LocalDateTime.now());
         entity.setUpdateTime(LocalDateTime.now());
         return entity;
@@ -44,6 +45,7 @@ public class LeaveApplicationMapper {
                 entity.getLeaveDay(),
                 entity.getLeaveStart(),
                 entity.getLeaveEnd(),
+                entity.getDescription(),
                 entity.getStatus().getType(),
                 entity.getCreateTime());
     }

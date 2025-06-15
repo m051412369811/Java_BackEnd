@@ -15,10 +15,11 @@ public class LeaveApplicationSummaryDTO {
     private Date leaveStart;
     private Date leaveEnd;
     private LocalDate applyDate;
+    private String description;
 
     public LeaveApplicationSummaryDTO(
             Integer id, String employeeName, String leaveType, Integer leaveDay, String statusType,
-            Date leaveStart, Date leaveEnd, LocalDate applyDate) {
+            Date leaveStart, Date leaveEnd, LocalDate applyDate, String description) {
         this.id = id;
         this.employeeName = employeeName;
         this.leaveType = leaveType;
@@ -27,6 +28,7 @@ public class LeaveApplicationSummaryDTO {
         this.leaveStart = leaveStart;
         this.leaveEnd = leaveEnd;
         this.applyDate = applyDate;
+        this.description = description;
     }
     // Getters/Setters...
 }

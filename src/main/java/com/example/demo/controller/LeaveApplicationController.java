@@ -51,11 +51,8 @@ public class LeaveApplicationController {
             if (employeeId == null) {
                 return new BaseApiResponse<>("尚未登入，無法申請請假");
             }
-
             dto.setEmployeeId(employeeId); // 用 session 的值強制設定
             dto.setApplyDate(LocalDate.now());
-            ;
-
             LeaveApplicationResponseDTO result = service.createLeaveApplication(dto);
             return new BaseApiResponse<>(result);
         } catch (Exception ex) {

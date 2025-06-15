@@ -17,6 +17,8 @@ public class LeaveApplicationRequestDTO {
     private Integer employeeId;
     @NotNull
     private Integer leaveTypeId;
+
+    private String description;
     @NotNull
     @Min(1)
     private Integer leaveDay;
