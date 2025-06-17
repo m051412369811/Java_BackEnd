@@ -27,19 +27,21 @@ public class LeaveApplicationController {
     private LeaveApplicationService service;
 
     @GetMapping("/summary")
-    public List<LeaveApplicationSummaryDTO> getLeaveApplicationSummaries(HttpSession session) {
-        // 1. 從 session 中獲取登入時存入的員工 ID
-        Object empIdFromSession = session.getAttribute("EMPLOYEE_ID");
-        // 2. 檢查 session 中是否存在員工 ID (使用者是否登入)
-        if (empIdFromSession != null) {
-            // 將 Object 型別轉換為 Integer
-            Integer employeeId = (Integer) empIdFromSession;
-            // 3. 呼叫 service 方法，並傳入從 session 拿到的 ID
-            return service.getLeaveApplicationSummariesByEmployeeId(employeeId);
-        } else {
-            // 如果使用者未登入，回傳一個空的列表
-            // 這樣可以避免前端出錯，同時也保護了資料
-            return Collections.emptyList();
+    public BaseApiResponse<List<LeaveApplicationSummaryDTO>> getLeaveApplicationSummaries(HttpSession session) {
+        try {
+            Object empIdFromSession = session.getAttribute("EMPLOYEE_ID");
+            if (empIdFromSession != null) {
+                Integer employeeId = (Integer) empIdFromSession;
+                List<LeaveApplicationSummaryDTO> list = service.getLeaveApplicationSummariesByEmployeeId(employeeId);
+                // 查無資料會自動是空 list
+                return new BaseApiResponse<>(list); // 成功
+            } else {
+                // 未登入，仍回傳空 list 但標註失敗
+                return new BaseApiResponse<>(Collections.emptyList(), false, "尚未登入");
+            }
+        } catch (Exception ex) {
+            // 例外情況也回空 list 並帶錯誤訊息
+            return new BaseApiResponse<>(Collections.emptyList(), false, ex.getMessage());
         }
     }
 

@@ -17,6 +17,13 @@ public class BaseApiResponse<T> {
         this.errMsg = " ";
     };
 
+    // 失敗專用
+    public BaseApiResponse(T body, boolean success, String errMsg) {
+        this.success = success;
+        this.body = body;
+        this.errMsg = errMsg;
+    };
+
     public BaseApiResponse(String errMsg) {
         this.success = false;
         this.body = null;
