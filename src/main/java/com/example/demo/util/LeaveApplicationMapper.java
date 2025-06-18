@@ -24,9 +24,9 @@ public class LeaveApplicationMapper {
         LeaveApplication entity = new LeaveApplication();
         entity.setEmployee(employee);
         entity.setLeaveType(leaveType);
-        entity.setLeaveDay(dto.getLeaveDay());
-        entity.setLeaveStart(dto.getLeaveStart());
-        entity.setLeaveEnd(dto.getLeaveEnd());
+        entity.setLeaveDays(dto.getLeaveDay());
+        entity.setStartDate(dto.getLeaveStart());
+        entity.setEndDate(dto.getLeaveEnd());
         entity.setStatus(status);
         entity.setApplyDate(applyTime);
         entity.setDescription(dto.getDescription());
@@ -40,13 +40,13 @@ public class LeaveApplicationMapper {
         return new LeaveApplicationResponseDTO(
                 entity.getId(),
                 entity.getEmployee().getFirstName() + " " + entity.getEmployee().getLastName(),
-                entity.getLeaveType().getType(),
+                entity.getLeaveType().getTypeName(),
                 entity.getApplyDate(),
-                entity.getLeaveDay(),
-                entity.getLeaveStart(),
-                entity.getLeaveEnd(),
+                entity.getLeaveDays(),
+                entity.getStartDate(),
+                entity.getEndDate(),
                 entity.getDescription(),
-                entity.getStatus().getType(),
+                entity.getStatus().getStatusName(),
                 entity.getCreateTime());
     }
 }

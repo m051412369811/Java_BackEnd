@@ -10,12 +10,19 @@ import com.example.demo.entity.LeaveApplication;
 
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication, Integer> {
     @Query("SELECT new com.example.demo.dto.LeaveApplicationSummaryDTO(" +
-            "la.id, CONCAT(e.lastName, e.firstName), lt.type, la.leaveDay, st.type, la.leaveStart, la.leaveEnd, la.applyDate, la.description) "
-            +
+            "la.id, " +
+            "CONCAT(e.lastName, ' ', e.firstName), " +
+            "lt.typeName, " + // ✅ 修正: lt.type -> lt.typeName
+            "la.leaveDays, " + // ✅ 修正: la.leaveDay -> la.leaveDays
+            "st.statusName, " + // ✅ 修正: st.type -> st.statusName
+            "la.startDate, " + // ✅ 修正: la.leaveStart -> la.startDate
+            "la.endDate, " + // ✅ 修正: la.leaveEnd -> la.endDate
+            "la.applyDate, " +
+            "la.description) " + // 註：這裡的參數數量和順序，需與 DTO 建構子完全匹配
             "FROM LeaveApplication la " +
             "JOIN la.employee e " +
             "JOIN la.leaveType lt " +
-            "JOIN la.status st " +
+            "JOIN la.status st " + // 注意: LeaveApplication Entity 中的欄位是 status
             "WHERE e.id = :empId " +
             "ORDER BY la.applyDate DESC")
     List<LeaveApplicationSummaryDTO> findSummaryByEmployeeId(@Param("empId") Integer empId);

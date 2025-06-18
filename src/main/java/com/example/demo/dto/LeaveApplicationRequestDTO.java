@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotNull;
@@ -23,9 +22,9 @@ public class LeaveApplicationRequestDTO {
     @Min(1)
     private Integer leaveDay;
     @NotNull
-    private Date leaveStart;
+    private LocalDate leaveStart;
     @NotNull
-    private Date leaveEnd;
+    private LocalDate leaveEnd;
 
     private LocalDate applyDate;
     @NotNull

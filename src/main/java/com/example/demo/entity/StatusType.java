@@ -12,11 +12,10 @@ import java.util.List;
 public class StatusType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "StatusTypeID")
     private Integer id;
 
-    @Column(name = "StatusType", nullable = false, length = 45)
-    private String type;
+    @Column(nullable = false, length = 45)
+    private String statusName; // 原為 type，改為 statusName 更清晰
 
     @OneToMany(mappedBy = "status", fetch = FetchType.LAZY)
     private List<LeaveApplication> leaveApplications;

@@ -3,7 +3,6 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,40 +14,39 @@ import java.util.List;
 public class LeaveApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LeaveApplicationID")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EmployeeID", nullable = false)
+    @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Column(name = "ApplyDate", nullable = false)
+    @Column(nullable = false)
     private LocalDate applyDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LeaveTypeID", nullable = false)
+    @JoinColumn(name = "leave_type_id", nullable = false)
     private LeaveType leaveType;
 
-    @Column(name = "LeaveDay", nullable = false)
-    private Integer leaveDay;
+    @Column(nullable = false)
+    private Integer leaveDays; // leaveDay -> leaveDays
 
-    @Column(name = "LeaveStart", nullable = false)
-    private Date leaveStart;
+    @Column(nullable = false)
+    private LocalDate startDate; // leaveStart -> startDate, 並使用 LocalDate
 
-    @Column(name = "LeaveEnd", nullable = false)
-    private Date leaveEnd;
+    @Column(nullable = false)
+    private LocalDate endDate; // leaveEnd -> endDate, 並使用 LocalDate
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Status", nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
     private StatusType status;
 
-    @Column(name = "CreateTime", nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createTime;
 
-    @Column(name = "UpdateTime", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updateTime;
 
-    @Column(name = "Description", columnDefinition = "TEXT", nullable = true)
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String description;
 
     @OneToMany(mappedBy = "leaveApplication", fetch = FetchType.LAZY)

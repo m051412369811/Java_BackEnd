@@ -12,14 +12,12 @@ import java.util.List;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DepartmentID")
     private Integer id;
 
-    @Column(name = "DepartmentName", nullable = false, length = 45)
-    private String name;
+    @Column(nullable = false, length = 45)
+    private String departmentName; // 對應到 department_name
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private List<Employee> employees;
-
     // getters and setters
 }

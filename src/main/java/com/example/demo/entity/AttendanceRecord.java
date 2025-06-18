@@ -13,26 +13,25 @@ import lombok.Data;
 public class AttendanceRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "AttendanceRecordID")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EmployeeID", nullable = false)
+    @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Column(name = "Date", nullable = false)
-    private LocalDate date;
+    @Column(nullable = false)
+    private LocalDate recordDate; // Date -> recordDate
 
-    @Column(name = "ClockInTime", nullable = false)
+    @Column(nullable = false)
     private LocalTime clockInTime;
 
-    @Column(name = "ClockOutTime", nullable = false)
+    @Column(nullable = false)
     private LocalTime clockOutTime;
 
-    @Column(name = "CreateTime", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime createTime;
 
-    @Column(name = "UpdateTime", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updateTime;
 
     // getters and setters

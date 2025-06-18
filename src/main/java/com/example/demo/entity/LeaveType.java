@@ -12,11 +12,10 @@ import java.util.List;
 public class LeaveType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LeaveTypeID")
     private Integer id;
 
-    @Column(name = "LeaveType", nullable = false, length = 45)
-    private String type;
+    @Column(nullable = false, length = 45)
+    private String typeName; // 原為 type，改為 typeName 更清晰
 
     @OneToMany(mappedBy = "leaveType", fetch = FetchType.LAZY)
     private List<LeaveApplication> leaveApplications;

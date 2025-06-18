@@ -13,19 +13,18 @@ import java.time.LocalDateTime;
 public class LeaveRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LeaveRecordID")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LeaveApplicationID", nullable = false)
+    @JoinColumn(name = "leave_application_id", nullable = false)
     private LeaveApplication leaveApplication;
 
-    @Column(name = "ApprovedDate", nullable = false)
+    @Column(nullable = false)
     private LocalDate approvedDate;
 
-    @Column(name = "CreateTime", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime createTime;
 
-    @Column(name = "UpdateTime", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updateTime;
 }

@@ -13,52 +13,51 @@ import java.util.List;
 @Table(name = "employees")
 public class Employee {
     @Id
-    @Column(name = "EmployeeID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 假設您的主鍵是自動遞增的
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DepartmentID", nullable = false)
+    @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TitleID", nullable = false)
+    @JoinColumn(name = "title_id", nullable = false)
     private Title title;
 
-    @Column(name = "LastName", nullable = false, length = 45)
+    @Column(nullable = false, length = 45)
     private String lastName;
 
-    @Column(name = "FirstName", nullable = false, length = 45)
+    @Column(nullable = false, length = 45)
     private String firstName;
 
-    @Column(name = "HireDate", nullable = false)
+    @Column(nullable = false)
     private LocalDate hireDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ReportsTo")
+    @JoinColumn(name = "manager_id") // 之前討論過，改為 manager_id 更清晰
     private Employee manager;
 
     @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
     private List<Employee> subordinates;
 
-    @Column(name = "BirthDate", nullable = false)
+    @Column(nullable = false)
     private LocalDate birthDate;
 
     @Column(name = "Role", nullable = false)
     private Boolean role;
 
-    @Column(name = "CreateTime", nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createTime;
 
-    @Column(name = "UpdateTime", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updateTime;
 
-    @Column(name = "LastLogInTime")
     private LocalDateTime lastLogInTime;
 
-    @Column(name = "Password", length = 64)
+    @Column(length = 64)
     private String password;
 
-    @Column(name = "Salt")
+    @Column
     private byte[] salt;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
@@ -66,6 +65,5 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     private List<LeaveApplication> leaveApplications;
-
     // getters and setters
 }

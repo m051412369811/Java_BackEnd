@@ -12,11 +12,10 @@ import java.util.List;
 public class Title {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TitleID")
     private Integer id;
 
-    @Column(name = "TitleName", nullable = false, length = 45)
-    private String name;
+    @Column(nullable = false, length = 45)
+    private String titleName; // 對應到 title_name
 
     @OneToMany(mappedBy = "title", fetch = FetchType.LAZY)
     private List<Employee> employees;
