@@ -2,10 +2,14 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 // 員工
 @Entity
@@ -43,8 +47,14 @@ public class Employee {
     @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "Role", nullable = false)
-    private Boolean role;
+    @ManyToMany(fetch = FetchType.EAGER) // 權限通常跟著使用者一起載入，建議用 EAGER
+    @JoinTable(name = "employee_roles", // 中間表的名稱
+            joinColumns = @JoinColumn(name = "employee_id"), // 在中間表中，代表 Employee 這方的欄位
+            inverseJoinColumns = @JoinColumn(name = "role_id") // 在中間表中，代表另一方(Role)的欄位
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Role> roles = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTime;
