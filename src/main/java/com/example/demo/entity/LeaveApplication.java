@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 // 請假申請
 @Entity
 @Data
@@ -40,9 +43,11 @@ public class LeaveApplication {
     @JoinColumn(name = "status_id", nullable = false)
     private StatusType status;
 
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTime;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updateTime;
 

@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,9 +13,9 @@ import jakarta.validation.Valid; // 用於Controller參數
 
 import com.example.demo.dto.BaseApiResponse;
 import com.example.demo.dto.LeaveApplicationRequestDTO;
-import com.example.demo.dto.LeaveApplicationResponseDTO;
 import com.example.demo.dto.LeaveApplicationSummaryDTO;
 import com.example.demo.dto.LeaveTypeDTO;
+import com.example.demo.entity.LeaveApplication;
 import com.example.demo.service.LeaveApplicationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,21 +47,31 @@ public class LeaveApplicationController {
     }
 
     @PostMapping("/applyingleaveapplication")
-    public BaseApiResponse<LeaveApplicationResponseDTO> createLeaveApplication(
-            @Valid @RequestBody LeaveApplicationRequestDTO dto, HttpSession session) {
-        try {
-            Integer employeeId = (Integer) session.getAttribute("EMPLOYEE_ID");
-            if (employeeId == null) {
-                return new BaseApiResponse<>("尚未登入，無法申請請假");
-            }
-            dto.setEmployeeId(employeeId); // 用 session 的值強制設定
-            dto.setApplyDate(LocalDate.now());
-            LeaveApplicationResponseDTO result = service.createLeaveApplication(dto);
-            return new BaseApiResponse<>(result);
-        } catch (Exception ex) {
-            return new BaseApiResponse<>(ex.getMessage());
+    public ResponseEntity<BaseApiResponse<Integer>> createLeaveApplication(
+            @Valid @RequestBody LeaveApplicationRequestDTO dto,
+            HttpSession session) {
+
+        Integer employeeId = (Integer) session.getAttribute("EMPLOYEE_ID");
+        if (employeeId == null) {
+            // 使用標準 HTTP 401 Unauthorized 狀態碼回傳未登入錯誤
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new BaseApiResponse<>("尚未登入，無法申請請假"));
         }
 
+        try {
+            // Controller 只需傳遞最原始的資料，將所有業務邏輯完全交給 Service
+            LeaveApplication createdApplication = service.createLeaveApplication(dto, employeeId);
+            // 新增成功，回傳標準的 HTTP 201 Created 狀態碼，並在 body 中附上新假單的 ID
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new BaseApiResponse<>(createdApplication.getId()));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // 對於可預期的業務邏輯錯誤（如找不到主管、日期錯誤），回傳 400 Bad Request
+            return ResponseEntity.badRequest().body(new BaseApiResponse<>(e.getMessage()));
+        } catch (Exception e) {
+            // 對於非預期的伺服器內部錯誤，回傳 500 Internal Server Error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BaseApiResponse<>("系統發生未預期的錯誤，請聯繫管理員"));
+        }
     }
 
     @GetMapping("/getallleavetype")

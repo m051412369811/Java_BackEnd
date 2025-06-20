@@ -4,6 +4,9 @@ import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 @Data
 @Table(name = "leave_approval")
@@ -33,9 +36,11 @@ public class LeaveApproval {
     @Column(length = 255, nullable = true)
     private String comments;
 
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTime;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updateTime;
 
