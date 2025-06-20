@@ -22,6 +22,7 @@ public class LeaveApplicationService {
     private final LeaveTypeRepository leaveTypeRepository;
     private final StatusTypeRepository statusTypeRepository;
     private final LeaveTypeMapper leaveTypeMapper;
+    private final LeaveDayHelper leaveDayHelper;
 
     // 直接定義狀態對應的數字id
     private static final int STATUS_PENDING_ID = 1;
@@ -52,7 +53,7 @@ public class LeaveApplicationService {
 
         // 步驟 2: 執行後端權威計算
         // 這裡先用簡化邏輯計算天數
-        int leaveDays = (int) java.time.temporal.ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate()) + 1;
+        int leaveDays = leaveDayHelper.calculateLeaveDays(dto.getStartDate(), dto.getEndDate());
         if (leaveDays <= 0) {
             throw new IllegalArgumentException("結束日期不能早于開始日期");
         }
