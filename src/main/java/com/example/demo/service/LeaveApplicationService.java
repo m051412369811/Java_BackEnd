@@ -27,6 +27,7 @@ public class LeaveApplicationService {
     // 直接定義狀態對應的數字id
     private static final int STATUS_PENDING_ID = 1;
     private static final int STATUS_APPROVED_ID = 2;
+    private static final int STATUS_WAITING_ID = 5;
 
     public List<LeaveApplicationSummaryDTO> getLeaveApplicationSummariesByEmployeeId(Integer empId) {
         System.out.println("JPQL findAllSummary() 被呼叫");
@@ -116,7 +117,9 @@ public class LeaveApplicationService {
             if (seniorManager == null) {
                 throw new IllegalStateException("該員工的主管沒有更高階主管，無法送出二階審核");
             }
-            createApprovalStep(application, seniorManager, 2, pendingStatus);
+
+            StatusType waitingStatus = statusTypeRepository.findById(STATUS_WAITING_ID).get();
+            createApprovalStep(application, seniorManager, 2, waitingStatus);
         }
     }
 

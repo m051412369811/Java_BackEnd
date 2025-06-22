@@ -21,7 +21,7 @@ public class DemoApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/api/**") // 你的 API 路徑
 						.allowedOrigins("http://localhost:5173") // 你的前端網址
-						.allowedMethods("GET", "POST", "PUT", "DELETE")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 						.allowCredentials(true) // 這行一定要加，才能 session-based login
 						.allowedHeaders("*")
 						.maxAge(3600);
