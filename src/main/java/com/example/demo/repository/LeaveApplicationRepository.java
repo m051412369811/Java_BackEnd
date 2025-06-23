@@ -24,7 +24,7 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
             "JOIN la.leaveType lt " +
             "JOIN la.status st " + // 注意: LeaveApplication Entity 中的欄位是 status
             "WHERE e.id = :empId " +
-            "ORDER BY la.applyDate DESC")
+            "ORDER BY la.createTime DESC")
     List<LeaveApplicationSummaryDTO> findSummaryByEmployeeId(@Param("empId") Integer empId);
 
 }

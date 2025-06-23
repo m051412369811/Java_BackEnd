@@ -3,17 +3,17 @@ package com.example.demo.controller;
 import com.example.demo.entity.Employee;
 import com.example.demo.service.LogInService;
 import com.example.demo.dto.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class LogInController {
 
-    @Autowired
-    private LogInService loginService;
+    private final LogInService loginService;
 
     // 登入
     @PostMapping("/login")

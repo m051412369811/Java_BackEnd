@@ -30,6 +30,6 @@ public interface LeaveApprovalRepository extends JpaRepository<LeaveApproval, In
             "JOIN app.employee applicant " +
             "JOIN app.leaveType lt " +
             "WHERE step.approver.id = :approverId AND step.statusType.id = 1 " + // 1 = Pending
-            "ORDER BY app.applyDate ASC")
+            "ORDER BY app.createTime ASC")
     List<PendingApprovalDTO> findPendingApprovalsByApproverId(@Param("approverId") Integer approverId);
 }

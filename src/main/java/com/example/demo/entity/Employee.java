@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 // 員工
 @Entity
 @Data
@@ -56,9 +59,11 @@ public class Employee {
     @EqualsAndHashCode.Exclude
     private Set<Role> roles = new HashSet<>();
 
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTime;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updateTime;
 

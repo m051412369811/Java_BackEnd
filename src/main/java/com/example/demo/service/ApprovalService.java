@@ -25,6 +25,7 @@ public class ApprovalService {
     private static final int STATUS_PENDING_ID = 1;
     private static final int STATUS_APPROVED_ID = 2;
     private static final int STATUS_REJECTED_ID = 3;
+    private static final int STATUS_CANCELED_ID = 4;
     private static final int STATUS_WAITING_ID = 5;
 
     // 獲取待審核列表
@@ -63,23 +64,27 @@ public class ApprovalService {
         LeaveApplication mainApplication = step.getLeaveApplication();
 
         // 如果是駁回，主假單直接變為駁回
-        if (!isApproveAction) {
-            mainApplication.setStatus(newStatus);
+        if (isApproveAction) {
+            // --- 如果是批准 ---
+            // 4a. 嘗試啟用下一關
+            activateNextApprovalStep(step);
+
+            // 4b. 檢查是否所有步驟都已批准，若是，則更新主單狀態
+            List<LeaveApproval> allSteps = leaveApprovalRepository.findByLeaveApplicationId(mainApplication.getId());
+            boolean allApproved = allSteps.stream()
+                    .allMatch(s -> s.getStatusType().getId().equals(STATUS_APPROVED_ID));
+            if (allApproved) {
+                mainApplication.setStatus(newStatus); // newStatus 此時是 Approved
+                leaveApplicationRepository.save(mainApplication);
+            }
+        } else {
+            // --- 如果是駁回 ---
+            // 4a. 主假單的總體狀態直接變為「已駁回」
+            mainApplication.setStatus(newStatus); // newStatus 此時是 Rejected
             leaveApplicationRepository.save(mainApplication);
-            return;
-        }
 
-        // 如果當前步驟被批准，則去啟動下一個步驟
-        activateNextApprovalStep(step);
-
-        // 如果是批准，則檢查是否所有步驟都已批准
-        List<LeaveApproval> allSteps = leaveApprovalRepository.findByLeaveApplicationId(mainApplication.getId());
-        boolean allApproved = allSteps.stream()
-                .allMatch(s -> s.getStatusType().getId().equals(STATUS_APPROVED_ID));
-
-        if (allApproved) {
-            mainApplication.setStatus(newStatus);
-            leaveApplicationRepository.save(mainApplication);
+            // 4b. 將所有其他「等待中」或「待審核」的步驟，狀態全部更新為「已取消」
+            cancelRemainingSteps(mainApplication.getId(), step.getId());
         }
     }
 
@@ -100,6 +105,22 @@ public class ApprovalService {
                     StatusType pendingStatus = statusTypeRepository.findById(STATUS_PENDING_ID).get();
                     nextStep.setStatusType(pendingStatus);
                     leaveApprovalRepository.save(nextStep);
+                });
+    }
+
+    private void cancelRemainingSteps(Integer applicationId, Integer currentStepId) {
+        List<LeaveApproval> allSteps = leaveApprovalRepository.findByLeaveApplicationId(applicationId);
+        StatusType canceledStatus = statusTypeRepository.findById(STATUS_CANCELED_ID)
+                .orElseThrow(() -> new IllegalStateException("找不到 Canceled 狀態 (ID: " + STATUS_CANCELED_ID + ")"));
+
+        allSteps.stream()
+                // 篩選出不是當前步驟，且狀態還是 Pending 或 Waiting 的步驟
+                .filter(step -> !step.getId().equals(currentStepId))
+                .filter(step -> step.getStatusType().getId().equals(STATUS_PENDING_ID)
+                        || step.getStatusType().getId().equals(STATUS_WAITING_ID))
+                .forEach(stepToCancel -> {
+                    stepToCancel.setStatusType(canceledStatus);
+                    leaveApprovalRepository.save(stepToCancel);
                 });
     }
 }
