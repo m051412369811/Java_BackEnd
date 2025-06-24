@@ -73,7 +73,7 @@ public class Employee {
     private String password;
 
     @Column
-    private byte[] salt;
+    private String salt;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     private List<AttendanceRecord> attendanceRecords;

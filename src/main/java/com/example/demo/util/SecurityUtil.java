@@ -4,23 +4,25 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 public final class SecurityUtil {
     private SecurityUtil() {
     }
 
-    public static String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException {
+    public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException {
+        byte[] saltBytes = Base64.getDecoder().decode(salt);
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(salt);
+        md.update(saltBytes);
         byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
         return bytesToHex(hashedPassword);
     }
 
-    public static byte[] generateSalt() {
+    public static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        return salt;
+        return Base64.getEncoder().encodeToString(salt);
     }
 
     private static String bytesToHex(byte[] hash) {

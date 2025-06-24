@@ -16,25 +16,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor // ✅ 使用 Lombok 進行建構子注入
+@RequiredArgsConstructor
 public class EmployeeService {
 
-    // ✅ 將所有依賴宣告為 final，由建構子注入
+    // 將所有依賴宣告為 final，由建構子注入
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final TitleRepository titleRepository;
 
-    /**
-     * 根據部門ID獲取員工列表。如果 departmentId 為 null，則查詢所有員工。
-     */
+    // 根據部門ID獲取員工列表。如果 departmentId 為 null，則查詢所有員工。
+
     @Transactional(readOnly = true)
     public List<EmployeeSummaryDTO> getEmployeesByDepartment(Integer departmentId) {
         return employeeRepository.findSummariesByDepartmentId(departmentId);
     }
 
-    /**
-     * 新增一名員工的核心業務邏輯
-     */
+    // 新增員工
     @Transactional
     public Employee createEmployee(EmployeeRequestDTO dto) {
         // 1. 根據傳入的 ID 查找關聯的 Entity
@@ -60,13 +57,13 @@ public class EmployeeService {
         employee.setTitle(title);
         employee.setManager(manager);
 
-        // ✅ 核心修正：確保 birthDate 有被正確設定
+        // 確保 birthDate 有被正確設定
         employee.setBirthDate(dto.getBirthDate());
 
         // 3. 處理預設密碼
         String defaultPassword = dto.getBirthDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         try {
-            byte[] salt = SecurityUtil.generateSalt();
+            String salt = SecurityUtil.generateSalt();
             String hashedPassword = SecurityUtil.hashPassword(defaultPassword, salt);
             employee.setPassword(hashedPassword);
             employee.setSalt(salt);
@@ -101,7 +98,6 @@ public class EmployeeService {
         employee.setDepartment(department);
         employee.setTitle(title);
         employee.setManager(manager);
-        // 通常不在此處更新密碼，密碼重設應有專門功能
 
         return employeeRepository.save(employee);
     }

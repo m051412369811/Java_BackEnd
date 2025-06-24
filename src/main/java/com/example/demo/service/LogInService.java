@@ -31,7 +31,7 @@ public class LogInService {
 
         try {
             // 4. 使用資料庫中儲存的 salt，來對「使用者本次輸入的密碼」進行雜湊
-            byte[] salt = emp.getSalt();
+            String salt = emp.getSalt();
             String hashedInputPassword = SecurityUtil.hashPassword(inputPassword, salt);
 
             // 5. 比對雜湊後的結果，是否與資料庫中儲存的密碼一致
