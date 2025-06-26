@@ -11,7 +11,7 @@ import com.example.demo.entity.LeaveApplication;
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication, Integer> {
     @Query("SELECT new com.example.demo.dto.LeaveApplicationSummaryDTO(" +
             "la.id, " +
-            "CONCAT(e.lastName, ' ', e.firstName), " +
+            "CONCAT(e.lastName,' ',e.firstName), " +
             "lt.typeName, " + // ✅ 修正: lt.type -> lt.typeName
             "la.leaveDays, " + // ✅ 修正: la.leaveDay -> la.leaveDays
             "st.statusName, " + // ✅ 修正: st.type -> st.statusName
