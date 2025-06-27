@@ -25,6 +25,8 @@
 * **RESTful 風格**：所有 API 端點都遵循 RESTful 設計原則，使用名詞而非動詞，並善用標準的 HTTP 方法 (GET, POST, PUT)。
 * **統一回應格式**：設計了 `BaseApiResponse` 來統一所有 API 的 JSON 回應結構，並使用 `ResponseEntity` 來精準控制 HTTP 狀態碼（`201`, `400`, `401`, `403`），提升了 API 的專業性和前端整合的便利性。
 
+## 部署與 CI/CD (Deployment & CI/CD)
+
 本後端專案透過一個現代化的自動化流程進行部署：
 
 1.  **容器化封裝 (Containerization)**
