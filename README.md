@@ -49,7 +49,7 @@
     * 所有敏感資訊，如資料庫的連線 URL、使用者名稱、密碼等，都儲存在 Railway 儀表板的 **Variables** 中，並在執行時注入到 Spring Boot 應用程式，確保了設定的安全性與靈活性。
 
 
-```mermaid
+```
 graph TD
     subgraph "使用者端 (Client)"
         A[👨‍💻 使用者瀏覽器]
