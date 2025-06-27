@@ -1,8 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Employee;
+import com.example.demo.entity.Role;
 import com.example.demo.service.LogInService;
 import com.example.demo.dto.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
@@ -17,42 +24,56 @@ public class LogInController {
 
     // 登入
     @PostMapping("/login")
-    public BaseApiResponse<LogInUserDTO> login(
+    public ResponseEntity<BaseApiResponse<LogInUserDTO>> login(
             @RequestParam int empId,
             @RequestParam String password,
             HttpSession session) {
 
         Employee emp = loginService.verifyLogin(empId, password);
         if (emp != null) {
-            // 存session
-            session.setAttribute("EMPLOYEE_ID", emp.getId());
+            // --- ✅ 核心修改點 ---
+            // 1. 從 Employee 物件中獲取 Role 集合
+            Set<Role> userRoles = emp.getRoles();
 
-            // 封裝 DTO（避免 Entity 洩漏）
-            LogInUserDTO dto = new LogInUserDTO(emp.getId(), emp.getLastName() + emp.getFirstName());
-            return new BaseApiResponse<>(dto);
+            // 2. 將 Set<Role> 轉換為 Set<String>，只儲存角色的名稱
+            Set<String> roleNames = userRoles.stream()
+                    .map(Role::getRoleName)
+                    .collect(Collectors.toSet());
+
+            // 3. 將重要資訊存入 Session
+            session.setAttribute("EMPLOYEE_ID", emp.getId());
+            session.setAttribute("EMPLOYEE_NAME", emp.getFirstName() + " " + emp.getLastName());
+            session.setAttribute("EMPLOYEE_ROLES", roleNames);
+
+            // 4. 封裝包含角色資訊的 DTO 回傳給前端
+            LogInUserDTO dto = new LogInUserDTO(emp.getId(), emp.getLastName() + " " + emp.getFirstName(), roleNames);
+            return ResponseEntity.ok(new BaseApiResponse<>(dto));
         } else {
-            return new BaseApiResponse<>("員工編號或密碼錯誤");
+            return ResponseEntity.badRequest().body(new BaseApiResponse<>("員工編號或密碼錯誤"));
         }
     }
 
     // 查詢當前登入者
     @GetMapping("/user")
-    public BaseApiResponse<LogInUserDTO> userInfo(HttpSession session) {
-        Object empId = session.getAttribute("EMPLOYEE_ID");
+    public ResponseEntity<BaseApiResponse<LogInUserDTO>> userInfo(HttpSession session) {
+        Integer empId = (Integer) session.getAttribute("EMPLOYEE_ID");
+
         if (empId != null) {
-            // 你可以再用 empId 查一次 DB 拿名稱，也可以只給 id
-            // 這裡假設你不查 DB，直接給 id
-            LogInUserDTO dto = new LogInUserDTO((Integer) empId, null);
-            return new BaseApiResponse<>(dto);
+            // ✅ 從 Session 中讀取所有已儲存的資訊
+            String name = (String) session.getAttribute("EMPLOYEE_NAME");
+            Set<String> roles = (Set<String>) session.getAttribute("EMPLOYEE_ROLES");
+
+            LogInUserDTO dto = new LogInUserDTO(empId, name, roles);
+            return ResponseEntity.ok(new BaseApiResponse<>(dto));
         } else {
-            return new BaseApiResponse<>("尚未登入");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseApiResponse<>("尚未登入"));
         }
     }
 
     // 登出
     @PostMapping("/logout")
-    public BaseApiResponse<Void> logout(HttpSession session) {
+    public ResponseEntity<BaseApiResponse<Object>> logout(HttpSession session) {
         session.invalidate();
-        return new BaseApiResponse<>((Void) null);
+        return ResponseEntity.ok(new BaseApiResponse<>(null));
     }
 }
