@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final TitleRepository titleRepository;
+    private final RoleRepository roleRepository;
 
     // 根據部門ID獲取員工列表。如果 departmentId 為 null，則查詢所有員工。
 
@@ -41,6 +45,11 @@ public class EmployeeService {
         Title title = titleRepository.findById(dto.getTitleId())
                 .orElseThrow(() -> new IllegalArgumentException("無效的職稱ID: " + dto.getTitleId()));
 
+        Set<Role> roles = new HashSet<>(roleRepository.findAllById(dto.getRoleIds()));
+        if (roles.size() != dto.getRoleIds().size()) {
+            throw new IllegalArgumentException("提供的一個或多個角色ID無效");
+        }
+
         // 只有在 managerId 存在時才去查詢主管
         Employee manager = null;
         if (dto.getManagerId() != null) {
@@ -56,6 +65,7 @@ public class EmployeeService {
         employee.setDepartment(department);
         employee.setTitle(title);
         employee.setManager(manager);
+        employee.setRoles(roles);
 
         // 確保 birthDate 有被正確設定
         employee.setBirthDate(dto.getBirthDate());
@@ -90,6 +100,11 @@ public class EmployeeService {
         Employee manager = (dto.getManagerId() != null) ? employeeRepository.findById(dto.getManagerId()).orElse(null)
                 : null;
 
+        Set<Role> roles = new HashSet<>(roleRepository.findAllById(dto.getRoleIds()));
+        if (roles.size() != dto.getRoleIds().size()) {
+            throw new IllegalArgumentException("提供的一個或多個角色ID無效");
+        }
+
         // 3. 更新欄位
         employee.setLastName(dto.getLastName());
         employee.setFirstName(dto.getFirstName());
@@ -98,6 +113,7 @@ public class EmployeeService {
         employee.setDepartment(department);
         employee.setTitle(title);
         employee.setManager(manager);
+        employee.setRoles(roles);
 
         return employeeRepository.save(employee);
     }
@@ -138,7 +154,10 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public List<OptionDTO<Integer>> getAllManagerOptions() {
-        return employeeRepository.findAllAsManagerOptions();
+    public List<OptionDTO<Integer>> getManagerOptions(Integer departmentId, Integer employeeId) {
+        if (departmentId == null) {
+            return Collections.emptyList(); // 如果沒有部門ID，則不提供任何主管選項
+        }
+        return employeeRepository.findManagerOptionsByDepartment(departmentId, employeeId);
     }
 }
