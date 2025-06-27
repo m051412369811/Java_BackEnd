@@ -25,11 +25,57 @@
 * **RESTful 風格**：所有 API 端點都遵循 RESTful 設計原則，使用名詞而非動詞，並善用標準的 HTTP 方法 (GET, POST, PUT)。
 * **統一回應格式**：設計了 `BaseApiResponse` 來統一所有 API 的 JSON 回應結構，並使用 `ResponseEntity` 來精準控制 HTTP 狀態碼（`201`, `400`, `401`, `403`），提升了 API 的專業性和前端整合的便利性。
 
+本後端專案透過一個現代化的自動化流程進行部署：
+
+1.  **容器化封裝 (Containerization)**
+    * 專案根目錄下的 `Dockerfile` 使用了**多階段建置 (Multi-stage build)**。
+    * 第一階段使用完整的 Maven JDK 環境來編譯與打包專案，產生可執行的 `.jar` 檔。
+    * 第二階段將產生的 `.jar` 檔複製到一個更輕量的 JRE (Java Runtime Environment) 環境中。
+    * 這個作法確保了最終運行的 Docker Image 體積小、更安全，並且完美解決了本地與雲端 Java 版本不匹配的問題。
+
+2.  **應用程式託管 (Application Hosting)**
+    * 應用程式被部署在 **Railway** 平台上。
+    * Railway 直接與本專案的 GitHub 倉庫連結。當 `main` 分支有新的 commit 時，Railway 會自動拉取程式碼。
+    * Railway 會偵測到 `Dockerfile`，並自動在雲端建置 Docker Image 並啟動容器。
+    * 平台會自動提供一個 `...up.railway.app` 的公開網域，並**自動設定好 HTTPS 及 SSL 憑證**，無需手動操作。
+
+3.  **資料庫 (Database)**
+    * 資料庫使用 **Amazon Web Services (AWS) 的 RDS (Relational Database Service)** 服務，資料庫類型為 **MySQL**。
+    * 為了讓在 Railway 上的後端服務能連線，RDS 的設定為**公開存取 (Public Access)**，並透過 AWS 的**安全群組 (Security Group)** 設定防火牆規則，只開放必要的資料庫連接埠 (3306)。
+
+4.  **環境變數 (Environment Variables)**
+    * 所有敏感資訊，如資料庫的連線 URL、使用者名稱、密碼等，都儲存在 Railway 儀表板的 **Variables** 中，並在執行時注入到 Spring Boot 應用程式，確保了設定的安全性與靈活性。
+
+
+```mermaid
+graph TD
+    subgraph "使用者端 (Client)"
+        A[👨‍💻 使用者瀏覽器]
+    end
+
+    subgraph "前端託管 (GitHub)"
+        B(🌐 GitHub Pages<br/>Vue.js 前端)
+    end
+    
+    subgraph "後端應用託管 (Railway)"
+        C(🚀 Railway<br/>Docker 化的 Spring Boot 應用)
+    end
+
+    subgraph "資料庫託管 (AWS)"
+        D[(🗄️ AWS RDS<br/>MySQL 資料庫)]
+    end
+
+    A -->|瀏覽網站| B
+    B -->|發送 API 請求 (HTTPS)| C
+    C -->|透過公網連線 (SSL)| D
+```
+
 ## 技術棧 (Technology Stack)
 * **語言**: Java 17+
 * **框架**: Spring Boot 3, Spring Data JPA
 * **資料庫**: MySQL 8
 * **工具**: Lombok, Maven
+* **容器化:** Docker
 
 ## 本機環境啟動指南
 1.  確保已安裝 Java 21 和 Maven。
