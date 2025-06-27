@@ -2,6 +2,29 @@
 
 這是一個使用 Spring Boot 搭建的後端伺服器，為一個現代化的人事管理系統提供 RESTful API 服務。專案不僅包含基礎的 CRUD 功能，更著重於實現真實世界中的複雜業務邏輯，如多階段審核工作流與角色權限管理。
 
+```
+graph TD
+    subgraph "使用者端 (Client)"
+        A[👨‍💻 使用者瀏覽器]
+    end
+
+    subgraph "前端託管 (GitHub)"
+        B(🌐 GitHub Pages<br/>Vue.js 前端)
+    end
+    
+    subgraph "後端應用託管 (Railway)"
+        C(🚀 Railway<br/>Docker 化的 Spring Boot 應用)
+    end
+
+    subgraph "資料庫託管 (AWS)"
+        D[(🗄️ AWS RDS<br/>MySQL 資料庫)]
+    end
+
+    A -->|瀏覽網站| B
+    B -->|發送 API 請求 (HTTPS)| C
+    C -->|透過公網連線 (SSL)| D
+```
+
 ## 專案亮點與設計決策
 
 這個專案最大的價值，在於將理論知識應用於解決複雜的業務需求。在開發過程中，我針對幾個核心問題進行了深入的設計與優化：
@@ -49,28 +72,7 @@
     * 所有敏感資訊，如資料庫的連線 URL、使用者名稱、密碼等，都儲存在 Railway 儀表板的 **Variables** 中，並在執行時注入到 Spring Boot 應用程式，確保了設定的安全性與靈活性。
 
 
-```
-graph TD
-    subgraph "使用者端 (Client)"
-        A[👨‍💻 使用者瀏覽器]
-    end
 
-    subgraph "前端託管 (GitHub)"
-        B(🌐 GitHub Pages<br/>Vue.js 前端)
-    end
-    
-    subgraph "後端應用託管 (Railway)"
-        C(🚀 Railway<br/>Docker 化的 Spring Boot 應用)
-    end
-
-    subgraph "資料庫託管 (AWS)"
-        D[(🗄️ AWS RDS<br/>MySQL 資料庫)]
-    end
-
-    A -->|瀏覽網站| B
-    B -->|發送 API 請求 (HTTPS)| C
-    C -->|透過公網連線 (SSL)| D
-```
 
 ## 技術棧 (Technology Stack)
 * **語言**: Java 17+
