@@ -32,7 +32,7 @@
 * **工具**: Lombok, Maven
 
 ## 本機環境啟動指南
-1.  確保已安裝 Java 17+ 和 Maven。
+1.  確保已安裝 Java 21 和 Maven。
 2.  確保已安裝並啟動 MySQL 8 伺服器。
 3.  在 MySQL 中建立名為 `javapj` 的資料庫。
 4.  將專案根目錄下的 `Dump20250617.sql` 檔案匯入到您的 `javapj` 資料庫中。
