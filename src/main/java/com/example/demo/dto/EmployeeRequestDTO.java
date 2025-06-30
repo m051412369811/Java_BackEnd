@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
 import lombok.Data;
 
 @Data
@@ -26,5 +27,8 @@ public class EmployeeRequestDTO {
 
     // 直屬主管可以是 null (例如 CEO)
     private Integer managerId;
+
+    @NotEmpty(message = "至少需要選擇一個角色")
+    private Set<Integer> roleIds;
 
 }
